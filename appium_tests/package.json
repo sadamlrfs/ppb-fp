@@ -1,0 +1,16 @@
+{
+  "name": "mindease-appium-tests",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "mocha tests/**/*.test.js --timeout 60000",
+    "test:auth": "mocha tests/auth.test.js --timeout 60000",
+    "test:journal": "mocha tests/journal.test.js --timeout 60000",
+    "test:mood": "mocha tests/mood.test.js --timeout 60000",
+    "test:chat": "mocha tests/chat.test.js --timeout 60000"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "webdriverio": "^8.27.0",
+    "chai": "^4.3.10"
+  }
+}
