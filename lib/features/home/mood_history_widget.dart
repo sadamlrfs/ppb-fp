@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../core/constants/app_routes.dart';
+import '../../core/utils/date_formatter.dart';
 import '../../models/mood_model.dart';
-
-// TODO [Anggota 2 — Mood Tracker]: Widget daftar riwayat mood
-//
-// Props: List<MoodModel> moods
-//
-// Tampilan:
-//   - ListView Card: emoji + label + tanggal relatif + cuplikan catatan
-//   - Tap item → navigasi ke MoodDetailPage dengan argument MoodModel
-//   - Empty state jika list kosong
 
 class MoodHistoryWidget extends StatelessWidget {
   final List<MoodModel> moods;
@@ -19,17 +12,39 @@ class MoodHistoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (moods.isEmpty) {
       return const Center(
-        child: Text('Belum ada riwayat mood',
-            style: TextStyle(color: Colors.grey)),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Text('Belum ada riwayat mood',
+              style: TextStyle(color: Colors.grey)),
+        ),
       );
     }
+
     return Column(
       children: moods
-          .map((m) => ListTile(
-                leading: Text(m.emoji,
-                    style: const TextStyle(fontSize: 24)),
-                title: Text(m.label),
-                // TODO: tambahkan tanggal relatif & navigasi ke detail
+          .map((m) => Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  onTap: () => Navigator.pushNamed(
+                      context, AppRoutes.moodDetail,
+                      arguments: m),
+                  leading: Text(m.emoji,
+                      style: const TextStyle(fontSize: 28)),
+                  title: Text(m.label,
+                      style: TextStyle(
+                          color: m.color, fontWeight: FontWeight.w600)),
+                  subtitle: m.note.isNotEmpty
+                      ? Text(m.note,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12))
+                      : null,
+                  trailing: Text(
+                    DateFormatter.toRelative(m.createdAt),
+                    style: const TextStyle(
+                        color: Colors.grey, fontSize: 12),
+                  ),
+                ),
               ))
           .toList(),
     );

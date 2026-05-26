@@ -6,7 +6,10 @@ import '../models/user_model.dart';
 class AuthService {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-  final _googleSignIn = GoogleSignIn();
+  final _googleSignIn = GoogleSignIn(
+    serverClientId:
+        '437913946832-2t9johuuh4nsd95h29qgefti5ckc2n36.apps.googleusercontent.com',
+  );
 
   User? get currentUser => _auth.currentUser;
   Stream<User?> get authStateChanges => _auth.authStateChanges();
@@ -24,18 +27,32 @@ class AuthService {
   }
 
   Future<UserCredential?> signInWithGoogle() async {
+    // 1. Buka picker akun Google
     final account = await _googleSignIn.signIn();
-    if (account == null) return null;
-    final auth = await account.authentication;
+    if (account == null) return null; // user cancel
+
+    // 2. Tukar token Google → kredensial Firebase
+    final googleAuth = await account.authentication;
     final credential = GoogleAuthProvider.credential(
-      accessToken: auth.accessToken,
-      idToken: auth.idToken,
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
     );
+
+    // 3. Sign-in ke Firebase Auth (otomatis create akun jika belum ada)
     final cred = await _auth.signInWithCredential(credential);
-    if (cred.additionalUserInfo?.isNewUser ?? false) {
-      await _createUserDoc(
-          cred.user!, cred.user!.displayName ?? 'User');
+    final user = cred.user;
+    if (user == null) return cred;
+
+    // 4. Pastikan dokumen Firestore user ada — buat jika belum
+    //    (lebih robust daripada hanya mengandalkan isNewUser, karena
+    //    isNewUser tidak akurat saat Firebase Auth user dihapus tapi
+    //    Firestore doc tetap, atau sebaliknya)
+    final userDocRef = _firestore.collection('users').doc(user.uid);
+    final userDoc = await userDocRef.get();
+    if (!userDoc.exists) {
+      await _createUserDoc(user, user.displayName ?? 'User');
     }
+
     return cred;
   }
 

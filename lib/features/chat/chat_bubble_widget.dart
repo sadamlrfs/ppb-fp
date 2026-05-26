@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/utils/date_formatter.dart';
 import '../../models/chat_message_model.dart';
-
-// TODO [Anggota 3 — AI Chat]: Widget gelembung chat
-//
-// Props: ChatMessageModel message
-//
-// Tampilan berdasarkan message.isUser:
-//   User  → bubble rata kanan, warna AppColors.primary, teks putih
-//   AI    → bubble rata kiri, warna putih / abu, teks gelap + avatar ikon spa
-//
-// Tambahkan timestamp kecil di bawah setiap bubble (DateFormatter.toTime)
 
 class ChatBubbleWidget extends StatelessWidget {
   final ChatMessageModel message;
@@ -18,19 +10,70 @@ class ChatBubbleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implementasi bubble dengan alignment berbeda untuk user vs AI
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: Align(
-        alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: message.isUser ? Colors.purple.shade100 : Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(12),
+      child: Row(
+        mainAxisAlignment:
+            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (!message.isUser) ...[
+            const CircleAvatar(
+              radius: 16,
+              backgroundColor: AppColors.primary,
+              child: Icon(Icons.spa, size: 16, color: Colors.white),
+            ),
+            const SizedBox(width: 8),
+          ],
+          Flexible(
+            child: Column(
+              crossAxisAlignment: message.isUser
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: message.isUser
+                        ? AppColors.primary
+                        : Colors.grey.shade100,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
+                      bottomLeft: Radius.circular(message.isUser ? 16 : 4),
+                      bottomRight: Radius.circular(message.isUser ? 4 : 16),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    message.content,
+                    style: TextStyle(
+                      color: message.isUser
+                          ? Colors.white
+                          : AppColors.textPrimary,
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  DateFormatter.toTime(message.timestamp),
+                  style: const TextStyle(
+                      color: AppColors.textHint, fontSize: 11),
+                ),
+              ],
+            ),
           ),
-          child: Text(message.content),
-        ),
+          if (message.isUser) const SizedBox(width: 8),
+        ],
       ),
     );
   }
