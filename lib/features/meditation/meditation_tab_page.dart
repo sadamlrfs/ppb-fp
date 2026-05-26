@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-
-// TODO [Anggota 3 — Meditation + AI]: Container Tab 3 dengan 2 sub-tab
-//
-// Struktur:
-//   - AppBar dengan title "Meditasi"
-//   - TabBar 2 tab:
-//       Tab 0 "Sesi"  → SessionListPage
-//       Tab 1 "AI Companion" → ChatListPage
-//
-// initState:
-//   - MeditationProvider.loadSessions()
-//   - MeditationProvider.listenUserSessions(uid)
-//   - ChatProvider.listenConversations(uid)
+import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/chat_provider.dart';
+import '../../providers/meditation_provider.dart';
+import '../chat/chat_list_page.dart';
+import 'session_list_page.dart';
 
 class MeditationTabPage extends StatefulWidget {
   const MeditationTabPage({super.key});
@@ -22,10 +15,51 @@ class MeditationTabPage extends StatefulWidget {
 
 class _MeditationTabPageState extends State<MeditationTabPage>
     with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initData());
+  }
+
+  Future<void> _initData() async {
+    final uid = context.read<AuthProvider>().firebaseUser?.uid ?? '';
+    final meditationProv = context.read<MeditationProvider>();
+    final chatProv = context.read<ChatProvider>();
+    await meditationProv.loadSessions();
+    if (!mounted) return;
+    meditationProv.listenUserSessions(uid);
+    chatProv.listenConversations(uid);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Meditation Tab — TODO')),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Meditasi'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(icon: Icon(Icons.self_improvement), text: 'Sesi'),
+            Tab(icon: Icon(Icons.smart_toy_outlined), text: 'AI Companion'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [
+          SessionListPage(),
+          ChatListPage(),
+        ],
+      ),
     );
   }
 }

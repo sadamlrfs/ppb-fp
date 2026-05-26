@@ -12,8 +12,8 @@ class GeminiService {
     );
   }
 
-  ChatSession startChat({List<Content> history = const []}) =>
-      _model.startChat(history: history);
+  ChatSession startChat({List<Content>? history}) =>
+      _model.startChat(history: history ?? []);
 
   Future<String> sendMessage(ChatSession session, String message) async {
     final response = await session.sendMessage(Content.text(message));

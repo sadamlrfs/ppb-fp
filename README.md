@@ -1,4 +1,4 @@
-# MindEase — Mental Wellness Companion App
+`# MindEase — Mental Wellness Companion App
 
 Aplikasi Flutter untuk kesehatan mental: jurnal harian, mood tracker, meditasi, dan AI companion berbasis Gemini.
 
@@ -110,8 +110,8 @@ lib/
     ├── auth/                   # Login, Register, ForgotPassword (SUDAH LENGKAP)
     ├── home/                   # Mood tracker — TODO [Anggota 2]
     ├── journal/                # Jurnal — TODO [Anggota 1]
-    ├── meditation/             # Meditasi + AI Chat — TODO [Anggota 3]
-    ├── ai_chat/                # AI Companion — TODO [Anggota 3]
+    ├── meditation/             # Meditasi — TODO [Anggota 3]
+    ├── chat/                   # AI Companion (Gemini) — TODO [Anggota 3]
     └── profile/                # Profil — TODO [Semua]
 
 assets/
@@ -129,7 +129,7 @@ appium_tests/                   # Automated UI tests (Appium + WebdriverIO)
 |---------|-------|--------|
 | Anggota 1 | Jurnal Harian | `lib/features/journal/` |
 | Anggota 2 | Mood Tracker + Home | `lib/features/home/` |
-| Anggota 3 | Meditasi + AI Chat | `lib/features/meditation/`, `lib/features/ai_chat/` |
+| Anggota 3 | Meditasi + AI Chat | `lib/features/meditation/`, `lib/features/chat/` |
 | Semua | Profil + Auth (sudah jadi) | `lib/features/profile/`, `lib/features/auth/` |
 
 Baca komentar `// TODO [Anggota X]` di dalam masing-masing file stub untuk panduan implementasi.
