@@ -1,7 +1,7 @@
 const { remote } = require('webdriverio');
 
 // Ganti path APK sesuai lokasi build debug kamu
-const APK_PATH = '/absolute/path/to/build/app/outputs/flutter-apk/app-debug.apk';
+const APK_PATH = 'android/app/build/outputs/flutter-apk/app-debug.apk';
 
 const capabilities = {
   platformName: 'Android',
