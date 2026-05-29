@@ -9,6 +9,16 @@ import '../../services/quote_service.dart';
 import '../../models/mood_model.dart';
 import 'mood_chart_widget.dart';
 import 'mood_history_widget.dart';
+import 'package:provider/provider.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_routes.dart';
+import '../../core/utils/date_formatter.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/mood_provider.dart';
+import '../../services/quote_service.dart';
+import '../../models/mood_model.dart';
+import 'mood_chart_widget.dart';
+import 'mood_history_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -183,8 +193,8 @@ class _QuoteCard extends StatelessWidget {
             const Icon(Icons.format_quote, color: AppColors.primary, size: 28),
             const SizedBox(height: 4),
             Text(text,
-                style: const TextStyle(
-                    fontSize: 14, fontStyle: FontStyle.italic)),
+                style:
+                    const TextStyle(fontSize: 14, fontStyle: FontStyle.italic)),
             const SizedBox(height: 8),
             Text('— $author',
                 style: const TextStyle(
@@ -240,8 +250,7 @@ class _MoodCheckIn extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Text(todayMood!.emoji,
-                    style: const TextStyle(fontSize: 36)),
+                Text(todayMood!.emoji, style: const TextStyle(fontSize: 36)),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -260,8 +269,7 @@ class _MoodCheckIn extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 13)),
+                                color: AppColors.textSecondary, fontSize: 13)),
                     ],
                   ),
                 ),

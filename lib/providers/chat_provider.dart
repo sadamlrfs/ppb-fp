@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -12,9 +13,11 @@ class ChatProvider extends ChangeNotifier {
   List<ChatConversationModel> _conversations = [];
   List<ChatMessageModel> _messages = [];
   ChatSession? _chatSession;
-  // ignore: prefer_final_fields
-  bool _loading = false;
+  final bool _loading = false;
   bool _sending = false;
+
+  StreamSubscription<QuerySnapshot>? _conversationsSub;
+  StreamSubscription<QuerySnapshot>? _messagesSub;
 
   List<ChatConversationModel> get conversations => _conversations;
   List<ChatMessageModel> get messages => _messages;
@@ -22,22 +25,25 @@ class ChatProvider extends ChangeNotifier {
   bool get sending => _sending;
 
   void listenConversations(String userId) {
-    _db
+    _conversationsSub?.cancel();
+    _conversationsSub = _db
         .collection('chatConversations')
         .where('userId', isEqualTo: userId)
         .orderBy('updatedAt', descending: true)
         .snapshots()
         .listen((snap) {
       _conversations = snap.docs
-          .map((d) => ChatConversationModel.fromMap(d.data(), d.id))
+          .map((d) => ChatConversationModel.fromMap(
+              d.data(), d.id))
           .toList();
       notifyListeners();
     });
   }
 
   void listenMessages(String conversationId) {
+    _messagesSub?.cancel();
     _chatSession = _gemini.startChat();
-    _db
+    _messagesSub = _db
         .collection('chatConversations')
         .doc(conversationId)
         .collection('messages')
@@ -45,7 +51,8 @@ class ChatProvider extends ChangeNotifier {
         .snapshots()
         .listen((snap) {
       _messages = snap.docs
-          .map((d) => ChatMessageModel.fromMap(d.data(), d.id))
+          .map((d) => ChatMessageModel.fromMap(
+              d.data(), d.id))
           .toList();
       notifyListeners();
     });
@@ -93,10 +100,12 @@ class ChatProvider extends ChangeNotifier {
         content: reply,
         timestamp: DateTime.now(),
       ).toMap());
-      await _db.collection('chatConversations').doc(conversationId).update({
-        'updatedAt': Timestamp.fromDate(DateTime.now()),
-      });
-    } catch (_) {
+      await _db
+          .collection('chatConversations')
+          .doc(conversationId)
+          .update({'updatedAt': Timestamp.fromDate(DateTime.now())});
+    } catch (e) {
+      debugPrint('[Gemini] sendMessage error: $e');
       await messagesRef.add(ChatMessageModel(
         id: '',
         role: MessageRole.assistant,
@@ -139,8 +148,17 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void clearMessages() {
+    _messagesSub?.cancel();
+    _messagesSub = null;
     _messages = [];
     _chatSession = null;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _conversationsSub?.cancel();
+    _messagesSub?.cancel();
+    super.dispose();
   }
 }

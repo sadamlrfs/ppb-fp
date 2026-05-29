@@ -22,6 +22,8 @@ class DefaultFirebaseOptions {
         messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
         projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
         storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+        androidClientId:
+            '437913946832-2t9johuuh4nsd95h29qgefti5ckc2n36.apps.googleusercontent.com',
       );
 
   static FirebaseOptions get ios => FirebaseOptions(

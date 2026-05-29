@@ -62,10 +62,18 @@ class AuthProvider extends ChangeNotifier {
     _setLoading(true);
     try {
       final result = await _service.signInWithGoogle();
+      if (result == null) {
+        // User cancel picker — bukan error, jangan tampilkan banner
+        _clearError();
+        return false;
+      }
       _clearError();
-      return result != null;
-    } catch (_) {
-      _setError('Gagal masuk dengan Google');
+      return true;
+    } on FirebaseAuthException catch (e) {
+      _setError(_authError(e.code));
+      return false;
+    } catch (e) {
+      _setError('Gagal masuk dengan Google: ${e.toString()}');
       return false;
     } finally {
       _setLoading(false);
