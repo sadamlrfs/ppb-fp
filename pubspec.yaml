@@ -33,6 +33,8 @@ dependencies:
 
   # Audio
   audioplayers: ^6.1.0
+  flutter_tts: ^4.2.0
+  speech_to_text: ^7.0.0
 
   # Charts
   fl_chart: ^0.68.0
