@@ -12,6 +12,8 @@ import 'features/home/mood_input_page.dart';
 import 'features/home/mood_detail_page.dart';
 import 'features/meditation/session_player_page.dart';
 import 'features/meditation/session_history_page.dart';
+import 'features/meditation/add_session_page.dart';
+import 'features/voice/voice_session_page.dart';
 import 'features/chat/chat_room_page.dart';
 import 'features/profile/edit_profile_page.dart';
 import 'widgets/bottom_nav_bar.dart';
@@ -38,6 +40,8 @@ class MindEaseApp extends StatelessWidget {
         AppRoutes.journalDetail: (_) => const JournalDetailPage(),
         AppRoutes.sessionPlayer: (_) => const SessionPlayerPage(),
         AppRoutes.sessionHistory: (_) => const SessionHistoryPage(),
+        AppRoutes.addSession: (_) => const AddSessionPage(),
+        AppRoutes.voiceSession: (_) => const VoiceSessionPage(),
         AppRoutes.chatRoom: (_) => const ChatRoomPage(),
         AppRoutes.editProfile: (_) => const EditProfilePage(),
       },
