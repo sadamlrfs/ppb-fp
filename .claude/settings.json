@@ -13,7 +13,8 @@
       "Read(//d/sadam/Dev/Tools/flutter/bin/cache/artifacts/engine/**)",
       "Bash(flutter precache *)",
       "Bash(./gradlew signingReport)",
-      "Bash(keytool -list -v -keystore __TRACKED_VAR__/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android)"
+      "Bash(keytool -list -v -keystore __TRACKED_VAR__/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android)",
+      "Bash(flutter pub *)"
     ]
   }
 }

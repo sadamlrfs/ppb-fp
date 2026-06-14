@@ -14,4 +14,5 @@ class AppRoutes {
   static const addSession = '/session/add';
   static const voiceSession = '/voice-session';
   static const editProfile = '/profile/edit';
+  static const notificationSettings = '/profile/notifications';
 }

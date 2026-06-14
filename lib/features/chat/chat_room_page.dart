@@ -185,19 +185,25 @@ class _WelcomeHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Padding(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.spa, size: 56, color: AppColors.primary),
-            SizedBox(height: 16),
-            Text('Halo! Saya MindEase AI.',
+            Image.asset(
+              'assets/images/logo_mark.png',
+              width: 56,
+              height: 56,
+              color: AppColors.primary,
+              colorBlendMode: BlendMode.srcIn,
+            ),
+            const SizedBox(height: 16),
+            const Text('Halo! Saya MindEase AI.',
                 style:
                     TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 8),
+            const Text(
               'Ceritakan apa yang ada di pikiranmu.\nSaya siap mendengarkan — ketik atau tekan mikrofon.',
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textSecondary),
@@ -218,10 +224,16 @@ class _TypingIndicator extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, bottom: 4),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 14,
             backgroundColor: AppColors.primary,
-            child: Icon(Icons.spa, size: 14, color: Colors.white),
+            child: Image.asset(
+              'assets/images/logo_mark.png',
+              width: 14,
+              height: 14,
+              color: Colors.white,
+              colorBlendMode: BlendMode.srcIn,
+            ),
           ),
           const SizedBox(width: 8),
           Container(

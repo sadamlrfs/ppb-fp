@@ -16,6 +16,7 @@ import 'features/meditation/add_session_page.dart';
 import 'features/voice/voice_session_page.dart';
 import 'features/chat/chat_room_page.dart';
 import 'features/profile/edit_profile_page.dart';
+import 'features/profile/notification_settings_page.dart';
 import 'widgets/bottom_nav_bar.dart';
 
 class MindEaseApp extends StatelessWidget {
@@ -44,6 +45,8 @@ class MindEaseApp extends StatelessWidget {
         AppRoutes.voiceSession: (_) => const VoiceSessionPage(),
         AppRoutes.chatRoom: (_) => const ChatRoomPage(),
         AppRoutes.editProfile: (_) => const EditProfilePage(),
+        AppRoutes.notificationSettings: (_) =>
+            const NotificationSettingsPage(),
       },
     );
   }
@@ -82,7 +85,13 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.spa, size: 80, color: Colors.white),
+            Image.asset(
+              'assets/images/logo_mark.png',
+              width: 80,
+              height: 80,
+              color: Colors.white,
+              colorBlendMode: BlendMode.srcIn,
+            ),
             const SizedBox(height: 16),
             Text(
               'MindEase',

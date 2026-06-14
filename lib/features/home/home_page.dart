@@ -9,16 +9,6 @@ import '../../services/quote_service.dart';
 import '../../models/mood_model.dart';
 import 'mood_chart_widget.dart';
 import 'mood_history_widget.dart';
-import 'package:provider/provider.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_routes.dart';
-import '../../core/utils/date_formatter.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/mood_provider.dart';
-import '../../services/quote_service.dart';
-import '../../models/mood_model.dart';
-import 'mood_chart_widget.dart';
-import 'mood_history_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

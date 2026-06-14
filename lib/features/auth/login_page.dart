@@ -57,7 +57,13 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 48),
-                const Icon(Icons.spa, size: 56, color: AppColors.primary),
+                Image.asset(
+                  'assets/images/logo_mark.png',
+                  width: 56,
+                  height: 56,
+                  color: AppColors.primary,
+                  colorBlendMode: BlendMode.srcIn,
+                ),
                 const SizedBox(height: 24),
                 Text(
                   'Selamat Datang',
