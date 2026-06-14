@@ -189,10 +189,15 @@ class ChatListPage extends StatelessWidget {
                     return Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
-                        leading: const CircleAvatar(
+                        leading: CircleAvatar(
                           backgroundColor: AppColors.primary,
-                          child: Icon(Icons.spa,
-                              color: Colors.white, size: 20),
+                          child: Image.asset(
+                            'assets/images/logo_mark.png',
+                            width: 20,
+                            height: 20,
+                            color: Colors.white,
+                            colorBlendMode: BlendMode.srcIn,
+                          ),
                         ),
                         title: Text(c.title,
                             style: const TextStyle(
@@ -228,15 +233,24 @@ class ChatListPage extends StatelessWidget {
                   },
                 ),
         ),
-        Padding(
+        Container(
+          width: double.infinity,
           padding: const EdgeInsets.all(16),
+          color: AppColors.primary,
           child: Semantics(
             identifier: 'newChatButton',
-            child: FloatingActionButton.extended(
-              heroTag: 'newChatFAB',
+            child: ElevatedButton.icon(
               onPressed: () => _newChat(context),
-              icon: const Icon(Icons.chat_bubble_outline),
+              icon: const Icon(Icons.chat_bubble_outline,
+                  color: Colors.white),
               label: const Text('Chat Baru'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                minimumSize: const Size(double.infinity, 48),
+              ),
             ),
           ),
         ),

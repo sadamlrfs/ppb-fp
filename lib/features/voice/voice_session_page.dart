@@ -281,15 +281,21 @@ class _VoiceSessionPageState extends State<VoiceSessionPage>
                                         strokeWidth: 3,
                                       ),
                                     )
-                                  : Icon(
-                                      _state == _VoiceState.listening
-                                          ? Icons.mic
-                                          : _state == _VoiceState.speaking
-                                              ? Icons.record_voice_over
-                                              : Icons.spa,
-                                      color: Colors.white,
-                                      size: 52,
-                                    ),
+                                  : _state == _VoiceState.idle
+                                      ? Image.asset(
+                                          'assets/images/logo_mark.png',
+                                          width: 52,
+                                          height: 52,
+                                          color: Colors.white,
+                                          colorBlendMode: BlendMode.srcIn,
+                                        )
+                                      : Icon(
+                                          _state == _VoiceState.listening
+                                              ? Icons.mic
+                                              : Icons.record_voice_over,
+                                          color: Colors.white,
+                                          size: 52,
+                                        ),
                             ),
                           ],
                         ),

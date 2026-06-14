@@ -112,7 +112,7 @@ class ProfilePage extends StatelessWidget {
             onTap: () =>
                 Navigator.pushNamed(context, AppRoutes.editProfile),
           ),
-          _NotificationTile(uid: user?.uid ?? ''),
+          const _NotificationTile(),
           const Divider(),
           ListTile(
             leading:
@@ -185,26 +185,18 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-class _NotificationTile extends StatefulWidget {
-  final String uid;
-  const _NotificationTile({required this.uid});
-
-  @override
-  State<_NotificationTile> createState() => _NotificationTileState();
-}
-
-class _NotificationTileState extends State<_NotificationTile> {
-  bool _enabled = true;
+class _NotificationTile extends StatelessWidget {
+  const _NotificationTile();
 
   @override
   Widget build(BuildContext context) {
-    return SwitchListTile(
-      secondary: const Icon(Icons.notifications_outlined,
-          color: AppColors.primary),
+    return ListTile(
+      leading: const Icon(Icons.notifications_outlined, color: AppColors.primary),
       title: const Text('Notifikasi'),
-      value: _enabled,
-      activeThumbColor: AppColors.primary,
-      onChanged: (v) => setState(() => _enabled = v),
+      subtitle: const Text('Atur jadwal pengingat harian',
+          style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => Navigator.pushNamed(context, AppRoutes.notificationSettings),
     );
   }
 }
