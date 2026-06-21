@@ -141,7 +141,7 @@ class _JournalFormPageState extends State<JournalFormPage> {
                   border: InputBorder.none,
                   hintStyle: TextStyle(
                       color: AppColors.textHint,
-                      fontSize: 22,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold),
                 ),
               ),
@@ -195,6 +195,9 @@ class _JournalFormPageState extends State<JournalFormPage> {
                       hintText: 'Tambah tag...',
                       border: InputBorder.none,
                       isDense: true,
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                      )
                     ),
                   ),
                 ),
