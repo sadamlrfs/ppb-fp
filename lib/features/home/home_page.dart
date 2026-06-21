@@ -25,14 +25,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // Run after first frame so context.read is safe
     WidgetsBinding.instance.addPostFrameCallback((_) => _initData());
   }
 
   Future<void> _initData() async {
+    // 1. Start listening to Firestore moods for this user
     final auth = context.read<AuthProvider>();
     if (auth.firebaseUser != null) {
       context.read<MoodProvider>().listenMoods(auth.firebaseUser!.uid);
     }
+
+    // 2. Fetch quote from ZenQuotes API
     final quote = await _quoteService.fetchRandomQuote();
     if (mounted) {
       setState(() {
@@ -74,27 +78,40 @@ class _HomePageState extends State<HomePage> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            // ── Greeting card ──────────────────────────────
             _GreetingCard(greeting: _greeting, name: name),
             const SizedBox(height: 16),
+
+            // ── Quote card (ZenQuotes) ─────────────────────
             if (_quoteText.isNotEmpty)
               _QuoteCard(text: _quoteText, author: _quoteAuthor),
             const SizedBox(height: 16),
-            _TodayMoodSection(todayMood: moodProv.todayMood),
+
+            // ── Today's mood check-in ──────────────────────
+            _MoodCheckIn(todayMood: moodProv.todayMood),
             const SizedBox(height: 20),
+
+            // ── Chart + history (only if data exists) ──────
             if (moodProv.moods.isNotEmpty) ...[
-              const Text('Tren 7 Hari',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                'Tren 7 Hari',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 8),
               MoodChartWidget(moods: moodProv.getLast(7)),
               const SizedBox(height: 20),
-              const Text('Riwayat Mood',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                'Riwayat Mood',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 8),
               MoodHistoryWidget(moods: moodProv.moods.take(5).toList()),
             ],
           ],
         ),
       ),
+
+      // ── FAB ───────────────────────────────────────────────
       floatingActionButton: Semantics(
         identifier: 'addMoodButton',
         child: FloatingActionButton.extended(
@@ -107,6 +124,9 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// ─────────────────────────────────────────────────────────────
+// Greeting card — shows user name + date
+// ─────────────────────────────────────────────────────────────
 class _GreetingCard extends StatelessWidget {
   final String greeting;
   final String name;
@@ -144,6 +164,9 @@ class _GreetingCard extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────
+// Quote card — data from ZenQuotes API
+// ─────────────────────────────────────────────────────────────
 class _QuoteCard extends StatelessWidget {
   final String text;
   final String author;
@@ -160,8 +183,8 @@ class _QuoteCard extends StatelessWidget {
             const Icon(Icons.format_quote, color: AppColors.primary, size: 28),
             const SizedBox(height: 4),
             Text(text,
-                style: const TextStyle(
-                    fontSize: 14, fontStyle: FontStyle.italic)),
+                style:
+                    const TextStyle(fontSize: 14, fontStyle: FontStyle.italic)),
             const SizedBox(height: 8),
             Text('— $author',
                 style: const TextStyle(
@@ -173,12 +196,16 @@ class _QuoteCard extends StatelessWidget {
   }
 }
 
-class _TodayMoodSection extends StatelessWidget {
+// ─────────────────────────────────────────────────────────────
+// Mood check-in — shows today's mood or a prompt if none yet
+// ─────────────────────────────────────────────────────────────
+class _MoodCheckIn extends StatelessWidget {
   final MoodModel? todayMood;
-  const _TodayMoodSection({this.todayMood});
+  const _MoodCheckIn({this.todayMood});
 
   @override
   Widget build(BuildContext context) {
+    // No mood logged today → show placeholder
     if (todayMood == null) {
       return Card(
         child: Padding(
@@ -187,8 +214,7 @@ class _TodayMoodSection extends StatelessWidget {
             children: [
               const Icon(Icons.mood, color: AppColors.textHint),
               const SizedBox(width: 12),
-              const Expanded(
-                  child: Text('Belum ada catatan mood hari ini')),
+              const Expanded(child: Text('Belum ada catatan mood hari ini')),
               TextButton(
                 onPressed: () =>
                     Navigator.pushNamed(context, AppRoutes.moodInput),
@@ -200,18 +226,21 @@ class _TodayMoodSection extends StatelessWidget {
       );
     }
 
+    // Mood exists → show it, tap to see detail
     return Semantics(
       identifier: 'todayMoodCard',
       child: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, AppRoutes.moodDetail,
-            arguments: todayMood),
+        onTap: () => Navigator.pushNamed(
+          context,
+          AppRoutes.moodDetail,
+          arguments: todayMood,
+        ),
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Text(todayMood!.emoji,
-                    style: const TextStyle(fontSize: 36)),
+                Text(todayMood!.emoji, style: const TextStyle(fontSize: 36)),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -230,13 +259,11 @@ class _TodayMoodSection extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 13)),
+                                color: AppColors.textSecondary, fontSize: 13)),
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right,
-                    color: AppColors.textHint),
+                const Icon(Icons.chevron_right, color: AppColors.textHint),
               ],
             ),
           ),

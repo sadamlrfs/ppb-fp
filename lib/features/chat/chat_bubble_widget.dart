@@ -18,10 +18,16 @@ class ChatBubbleWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!message.isUser) ...[
-            const CircleAvatar(
+            CircleAvatar(
               radius: 16,
               backgroundColor: AppColors.primary,
-              child: Icon(Icons.spa, size: 16, color: Colors.white),
+              child: Image.asset(
+                'assets/images/logo_mark.png',
+                width: 16,
+                height: 16,
+                color: Colors.white,
+                colorBlendMode: BlendMode.srcIn,
+              ),
             ),
             const SizedBox(width: 8),
           ],

@@ -72,25 +72,90 @@ class ChatListPage extends StatelessWidget {
 
     return Column(
       children: [
+        // Voice session card
+        GestureDetector(
+          onTap: () =>
+              Navigator.pushNamed(context, AppRoutes.voiceSession),
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF1E1B4B), Color(0xFF312E81)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.25),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.mic,
+                      color: Colors.white, size: 24),
+                ),
+                const SizedBox(width: 14),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Sesi Suara dengan AI',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Bicara langsung dan curhat dengan AI',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_ios,
+                    color: Colors.white54, size: 16),
+              ],
+            ),
+          ),
+        ),
+        // Disclaimer
         Container(
-          margin: const EdgeInsets.all(12),
-          padding: const EdgeInsets.all(12),
+          margin: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: AppColors.primary.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(
                 color: AppColors.primary.withValues(alpha: 0.2)),
           ),
           child: const Row(
             children: [
               Icon(Icons.info_outline,
-                  color: AppColors.primary, size: 18),
+                  color: AppColors.primary, size: 16),
               SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'MindEase AI bukan pengganti psikolog profesional. Hubungi tenaga ahli jika diperlukan.',
                   style: TextStyle(
-                      fontSize: 12, color: AppColors.textSecondary),
+                      fontSize: 11, color: AppColors.textSecondary),
                 ),
               ),
             ],
@@ -124,10 +189,15 @@ class ChatListPage extends StatelessWidget {
                     return Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
-                        leading: const CircleAvatar(
+                        leading: CircleAvatar(
                           backgroundColor: AppColors.primary,
-                          child: Icon(Icons.spa,
-                              color: Colors.white, size: 20),
+                          child: Image.asset(
+                            'assets/images/logo_mark.png',
+                            width: 20,
+                            height: 20,
+                            color: Colors.white,
+                            colorBlendMode: BlendMode.srcIn,
+                          ),
                         ),
                         title: Text(c.title,
                             style: const TextStyle(
@@ -163,15 +233,24 @@ class ChatListPage extends StatelessWidget {
                   },
                 ),
         ),
-        Padding(
+        Container(
+          width: double.infinity,
           padding: const EdgeInsets.all(16),
+          color: AppColors.primary,
           child: Semantics(
             identifier: 'newChatButton',
-            child: FloatingActionButton.extended(
-              heroTag: 'newChatFAB',
+            child: ElevatedButton.icon(
               onPressed: () => _newChat(context),
-              icon: const Icon(Icons.chat_bubble_outline),
+              icon: const Icon(Icons.chat_bubble_outline,
+                  color: Colors.white),
               label: const Text('Chat Baru'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                minimumSize: const Size(double.infinity, 48),
+              ),
             ),
           ),
         ),

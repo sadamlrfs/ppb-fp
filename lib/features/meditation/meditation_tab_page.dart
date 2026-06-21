@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../core/constants/app_routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/meditation_provider.dart';
@@ -21,6 +22,7 @@ class _MeditationTabPageState extends State<MeditationTabPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() => setState(() {}));
     WidgetsBinding.instance.addPostFrameCallback((_) => _initData());
   }
 
@@ -60,6 +62,15 @@ class _MeditationTabPageState extends State<MeditationTabPage>
           ChatListPage(),
         ],
       ),
+      floatingActionButton: _tabController.index == 0
+          ? FloatingActionButton.extended(
+              heroTag: 'addSessionFAB',
+              onPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.addSession),
+              icon: const Icon(Icons.add),
+              label: const Text('Tambah Sesi'),
+            )
+          : null,
     );
   }
 }
