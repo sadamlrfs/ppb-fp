@@ -75,6 +75,7 @@ class JournalDetailPage extends StatelessWidget {
               const SizedBox(height: 20),
               Wrap(
                 spacing: 6,
+                runSpacing: 6,
                 children: journal.tags
                     .map((t) => Chip(
                           label: Text(t,
