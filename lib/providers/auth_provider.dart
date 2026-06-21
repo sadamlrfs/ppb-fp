@@ -21,7 +21,12 @@ class AuthProvider extends ChangeNotifier {
     _service.authStateChanges.listen((user) async {
       _firebaseUser = user;
       if (user != null) {
-        _userModel = await _service.getUserProfile(user.uid);
+        final profile = await _service.getUserProfile(user.uid);
+        if (profile != null) {
+          _userModel = profile;
+        } else if (_userModel == null || _userModel!.uid != user.uid) {
+          _userModel = null;
+        }
       } else {
         _userModel = null;
       }
@@ -47,7 +52,17 @@ class AuthProvider extends ChangeNotifier {
       String email, String password, String displayName) async {
     _setLoading(true);
     try {
-      await _service.registerWithEmail(email, password, displayName);
+      final cred = await _service.registerWithEmail(email, password, displayName);
+      _firebaseUser = cred.user;
+      if (cred.user != null) {
+        _userModel = UserModel(
+          uid: cred.user!.uid,
+          email: email,
+          displayName: displayName,
+          photoUrl: cred.user!.photoURL ?? '',
+          createdAt: DateTime.now(),
+        );
+      }
       _clearError();
       return true;
     } on FirebaseAuthException catch (e) {
