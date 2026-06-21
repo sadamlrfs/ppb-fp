@@ -117,7 +117,7 @@ class JournalDetailPage extends StatelessWidget {
       ),
     );
     if (ok == true && context.mounted) {
-      await context.read<JournalProvider>().deleteJournal(journal.id);
+      await context.read<JournalProvider>().deleteJournal(journal.id, journal.userId);
       if (context.mounted) Navigator.pop(context);
     }
   }
