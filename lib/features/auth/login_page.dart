@@ -32,7 +32,8 @@ class _LoginPageState extends State<LoginPage> {
     final ok =
         await auth.signInWithEmail(_emailCtrl.text.trim(), _passCtrl.text);
     if (ok && mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppRoutes.home, (route) => false);
     }
   }
 
@@ -40,7 +41,8 @@ class _LoginPageState extends State<LoginPage> {
     final auth = context.read<AuthProvider>();
     final ok = await auth.signInWithGoogle();
     if (ok && mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppRoutes.home, (route) => false);
     }
   }
 
@@ -78,8 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 40),
-                if (auth.error != null)
-                  _ErrorBanner(message: auth.error!),
+                if (auth.error != null) _ErrorBanner(message: auth.error!),
                 Semantics(
                   identifier: 'emailField',
                   child: TextFormField(
@@ -103,11 +104,9 @@ class _LoginPageState extends State<LoginPage> {
                       labelText: AppStrings.password,
                       prefixIcon: const Icon(Icons.lock_outlined),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscure
-                            ? Icons.visibility_off
-                            : Icons.visibility),
-                        onPressed: () =>
-                            setState(() => _obscure = !_obscure),
+                        icon: Icon(
+                            _obscure ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () => setState(() => _obscure = !_obscure),
                       ),
                     ),
                   ),
@@ -115,8 +114,8 @@ class _LoginPageState extends State<LoginPage> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () => Navigator.pushNamed(
-                        context, AppRoutes.forgotPassword),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, AppRoutes.forgotPassword),
                     child: const Text(AppStrings.forgotPassword),
                   ),
                 ),
