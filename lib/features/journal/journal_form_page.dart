@@ -207,9 +207,11 @@ class _JournalFormPageState extends State<JournalFormPage> {
                     onPressed: _addTag),
               ],
             ),
-            if (_tags.isNotEmpty)
+            if (_tags.isNotEmpty) ...[
+              const SizedBox(height: 8),
               Wrap(
                 spacing: 6,
+                runSpacing: 6,
                 children: _tags
                     .map((t) => Chip(
                           label: Text(t,
@@ -222,6 +224,7 @@ class _JournalFormPageState extends State<JournalFormPage> {
                         ))
                     .toList(),
               ),
+            ],
             const SizedBox(height: 16),
             OutlinedButton.icon(
               onPressed: _pickImage,
