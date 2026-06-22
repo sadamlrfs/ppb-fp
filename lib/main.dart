@@ -45,7 +45,14 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => JournalProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, JournalProvider>(
+          create: (_) => JournalProvider(),
+          update: (_, auth, journal) {
+            final uid = auth.firebaseUser?.uid ?? '';
+            journal!.listenJournals(uid);
+            return journal;
+          },
+        ),
         ChangeNotifierProvider(create: (_) => MoodProvider()),
         ChangeNotifierProvider(create: (_) => MeditationProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),

@@ -36,6 +36,7 @@ appium_tests/node_modules/
 .idea/
 .vscode/
 *.iml
+.claude/
 
 # Unused Flutter platforms (mobile-only project)
 linux/

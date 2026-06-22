@@ -75,6 +75,7 @@ class JournalDetailPage extends StatelessWidget {
               const SizedBox(height: 20),
               Wrap(
                 spacing: 6,
+                runSpacing: 6,
                 children: journal.tags
                     .map((t) => Chip(
                           label: Text(t,
@@ -117,7 +118,7 @@ class JournalDetailPage extends StatelessWidget {
       ),
     );
     if (ok == true && context.mounted) {
-      await context.read<JournalProvider>().deleteJournal(journal.id);
+      await context.read<JournalProvider>().deleteJournal(journal.id, journal.userId);
       if (context.mounted) Navigator.pop(context);
     }
   }
