@@ -11,5 +11,8 @@ class AppRoutes {
   static const sessionPlayer = '/session-player';
   static const sessionHistory = '/session-history';
   static const chatRoom = '/chat/room';
+  static const addSession = '/session/add';
+  static const voiceSession = '/voice-session';
   static const editProfile = '/profile/edit';
+  static const notificationSettings = '/profile/notifications';
 }
