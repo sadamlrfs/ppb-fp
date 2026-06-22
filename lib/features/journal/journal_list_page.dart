@@ -21,10 +21,6 @@ class _JournalListPageState extends State<JournalListPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final uid = context.read<AuthProvider>().firebaseUser?.uid ?? '';
-      context.read<JournalProvider>().listenJournals(uid);
-    });
   }
 
   @override
@@ -108,6 +104,7 @@ class _JournalListPageState extends State<JournalListPage> {
       floatingActionButton: Semantics(
         identifier: 'addJournalButton',
         child: FloatingActionButton(
+          heroTag: 'journalListFab',
           onPressed: () =>
               Navigator.pushNamed(context, AppRoutes.journalForm),
           child: const Icon(Icons.edit),
@@ -186,10 +183,14 @@ class _EmptyState extends StatelessWidget {
           const Text('Belum ada jurnal',
               style: TextStyle(color: Colors.grey, fontSize: 16)),
           const SizedBox(height: 8),
-          ElevatedButton.icon(
-            onPressed: onAdd,
-            icon: const Icon(Icons.add),
-            label: const Text('Tulis Jurnal'),
+          SizedBox(
+            width: 200,
+            height: 40,
+            child: ElevatedButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add),
+              label: const Text('Tulis Jurnal'),
+            ),
           ),
         ],
       ),

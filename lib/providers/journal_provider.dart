@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/journal_model.dart';
@@ -12,6 +13,9 @@ class JournalProvider extends ChangeNotifier {
   String? _error;
   String? _filterCategory;
   String _searchQuery = '';
+
+  String? _currentUserId;
+  StreamSubscription<QuerySnapshot>? _subscription;
 
   bool get loading => _loading;
   String? get error => _error;
@@ -44,16 +48,55 @@ class JournalProvider extends ChangeNotifier {
   }
 
   void listenJournals(String userId) {
-    _db
+    print('DEBUG: JournalProvider: listenJournals called for userId: "$userId", currentUserId: "$_currentUserId"');
+    if (userId.isEmpty) {
+      print('DEBUG: JournalProvider: userId is empty, clearing journals.');
+      _currentUserId = null;
+      _subscription?.cancel();
+      _subscription = null;
+      _journals = [];
+      notifyListeners();
+      return;
+    }
+    if (_currentUserId == userId) {
+      print('DEBUG: JournalProvider: already listening to "$userId", skipping subscription.');
+      return;
+    }
+
+    print('DEBUG: JournalProvider: changing listener from "$_currentUserId" to "$userId"');
+    _currentUserId = userId;
+    _subscription?.cancel();
+    _journals = []; // Clear immediately to avoid showing previous user's data
+
+    _subscription = _db
         .collection('journals')
         .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
         .snapshots()
         .listen((snap) {
-      _journals =
-          snap.docs.map((d) => JournalModel.fromMap(d.data(), d.id)).toList();
+      print('DEBUG: JournalProvider: received snapshot with ${snap.docs.length} documents.');
+      final list = snap.docs.map((d) => JournalModel.fromMap(d.data(), d.id)).toList();
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Sort locally by createdAt descending
+      _journals = list;
       notifyListeners();
+    }, onError: (err) {
+      print('DEBUG: JournalProvider: Firestore stream error: $err');
     });
+  }
+
+  Future<void> fetchJournals(String userId) async {
+    if (userId.isEmpty) return;
+    try {
+      final snap = await _db
+          .collection('journals')
+          .where('userId', isEqualTo: userId)
+          .get();
+      final list = snap.docs.map((d) => JournalModel.fromMap(d.data(), d.id)).toList();
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Sort locally by createdAt descending
+      _journals = list;
+      notifyListeners();
+    } catch (e) {
+      print('DEBUG: fetchJournals error: $e');
+    }
   }
 
   Future<bool> createJournal({
@@ -82,6 +125,7 @@ class JournalProvider extends ChangeNotifier {
             createdAt: now,
             updatedAt: now,
           ).toMap());
+      await fetchJournals(userId);
       return true;
     } catch (e) {
       _error = e.toString();
@@ -102,6 +146,7 @@ class JournalProvider extends ChangeNotifier {
         updated = updated.copyWith(imageUrl: url);
       }
       await _db.collection('journals').doc(journal.id).update(updated.toMap());
+      await fetchJournals(journal.userId);
       return true;
     } catch (e) {
       _error = e.toString();
@@ -112,9 +157,10 @@ class JournalProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteJournal(String id) async {
+  Future<bool> deleteJournal(String id, String userId) async {
     try {
       await _db.collection('journals').doc(id).delete();
+      await fetchJournals(userId);
       return true;
     } catch (e) {
       _error = e.toString();
@@ -126,5 +172,11 @@ class JournalProvider extends ChangeNotifier {
   void _setLoading(bool val) {
     _loading = val;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 }

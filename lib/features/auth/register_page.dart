@@ -33,7 +33,8 @@ class _RegisterPageState extends State<RegisterPage> {
     final ok = await auth.register(
         _emailCtrl.text.trim(), _passCtrl.text, _nameCtrl.text.trim());
     if (ok && mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppRoutes.home, (route) => false);
     }
   }
 
